@@ -19,8 +19,8 @@ export function checkCollision(x, y) {
     const gateX = Math.floor(CONFIG.GRID_W / 2);
     const gateY = Math.floor(CONFIG.GRID_H / 2);
 
-    // Top/Bottom Gates
-    if (gx === gateX && (gy === 0 || gy === CONFIG.GRID_H - 1)) return false;
+    // Bottom Gate only (North gate remains solid/closed)
+    if (gx === gateX && gy === CONFIG.GRID_H - 1) return false;
     // Left/Right Gates
     if (gy === gateY && (gx === 0 || gx === CONFIG.GRID_W - 1)) return false;
 
