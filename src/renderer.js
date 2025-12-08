@@ -117,21 +117,30 @@ export class Renderer {
         const sx = Math.cos(shadowDir) * shadowLen;
         const sy = Math.sin(shadowDir) * shadowLen;
 
-        // Invalidate floor cache if zoom changed significantly
-        if (this.cachedFloor && Math.abs(this.cachedFloor.width - tileSize) > 1) {
+        // Invalidate floor cache if zoom changed (strict check to prevent gaps)
+        if (this.cachedFloor && this.cachedFloor.width !== Math.ceil(tileSize)) {
             this.cachedFloor = null;
         }
 
         // Create cached floor tile if needed
         if (!this.cachedFloor && ASSETS.loaded) {
             this.cachedFloor = document.createElement('canvas');
-            this.cachedFloor.width = tileSize;
-            this.cachedFloor.height = tileSize;
+            // Use integer size to avoid canvas clipping/scaling artifacts
+            const size = Math.ceil(tileSize);
+            this.cachedFloor.width = size;
+            this.cachedFloor.height = size;
+            
             const fCtx = this.cachedFloor.getContext('2d');
-            const subSize = tileSize / 2;
+            
+            // Calculate sub-tile size based on ceiling to prevent internal gaps
+            const subSize = size / 2;
+            // Draw slightly larger to ensure overlap (seam prevention)
+            const drawSize = Math.ceil(subSize);
+            
             for (let oy = 0; oy < 2; oy++) {
                 for (let ox = 0; ox < 2; ox++) {
-                    fCtx.drawImage(ASSETS.floor, ox * subSize, oy * subSize, subSize, subSize);
+                    // Use float position for accuracy, but integer/ceil size for coverage
+                    fCtx.drawImage(ASSETS.floor, ox * subSize, oy * subSize, drawSize, drawSize);
                 }
             }
         }
@@ -150,8 +159,8 @@ export class Renderer {
                 ) continue;
                 
                 if (this.cachedFloor) {
-                    // Use explicit size (ceil) to prevent sub-pixel gaps during zoom
-                    this.ctx.drawImage(this.cachedFloor, pos.x, pos.y, Math.ceil(tileSize), Math.ceil(tileSize));
+                    // Use cached floor's integer dimensions directly
+                    this.ctx.drawImage(this.cachedFloor, pos.x, pos.y, this.cachedFloor.width, this.cachedFloor.height);
                 }
             }
         }

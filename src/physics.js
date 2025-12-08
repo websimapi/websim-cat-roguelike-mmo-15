@@ -19,8 +19,12 @@ export function checkCollision(x, y) {
     const gateX = Math.floor(CONFIG.GRID_W / 2);
     const gateY = Math.floor(CONFIG.GRID_H / 2);
 
-    // Bottom Gate only (North gate remains solid/closed)
-    if (gx === gateX && gy === CONFIG.GRID_H - 1) return false;
+    // Bottom Gate (South) - Half-block barrier
+    if (gx === gateX && gy === CONFIG.GRID_H - 1) {
+        // Allow entering the alcove but stop before exiting (barrier at 50% mark)
+        if (y > gy + 0.5) return true;
+        return false;
+    }
     // Left/Right Gates
     if (gy === gateY && (gx === 0 || gx === CONFIG.GRID_W - 1)) return false;
 
