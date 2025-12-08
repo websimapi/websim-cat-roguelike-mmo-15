@@ -16,7 +16,7 @@ export async function loadAssets() {
         new Promise(resolve => { ASSETS.floor.onload = resolve; ASSETS.floor.src = 'terrain_floor.png'; }),
         new Promise(resolve => { ASSETS.wall.onload = resolve; ASSETS.wall.src = 'terrain_wall.png'; }),
         new Promise(resolve => { ASSETS.shop.onload = resolve; ASSETS.shop.src = 'shop_front.png'; }),
-        new Promise(resolve => { ASSETS.gate.onload = resolve; ASSETS.gate.src = 'steel_gate.png'; }),
+        new Promise(resolve => { ASSETS.gate.onload = resolve; ASSETS.gate.src = 'gate.png'; }),
         loadAudio(ASSETS.shootInfo),
         loadAudio(ASSETS.meowInfo),
         loadAudio(ASSETS.musicInfo)
