@@ -117,6 +117,11 @@ export class Renderer {
         const sx = Math.cos(shadowDir) * shadowLen;
         const sy = Math.sin(shadowDir) * shadowLen;
 
+        // Invalidate floor cache if zoom changed significantly
+        if (this.cachedFloor && Math.abs(this.cachedFloor.width - tileSize) > 1) {
+            this.cachedFloor = null;
+        }
+
         // Create cached floor tile if needed
         if (!this.cachedFloor && ASSETS.loaded) {
             this.cachedFloor = document.createElement('canvas');
@@ -145,7 +150,8 @@ export class Renderer {
                 ) continue;
                 
                 if (this.cachedFloor) {
-                    this.ctx.drawImage(this.cachedFloor, pos.x, pos.y);
+                    // Use explicit size (ceil) to prevent sub-pixel gaps during zoom
+                    this.ctx.drawImage(this.cachedFloor, pos.x, pos.y, Math.ceil(tileSize), Math.ceil(tileSize));
                 }
             }
         }

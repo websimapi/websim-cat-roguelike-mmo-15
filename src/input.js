@@ -1,5 +1,6 @@
 import nipplejs from 'https://esm.sh/nipplejs';
 import { startMusic } from './assets.js';
+import { CONFIG } from './config.js';
 
 export const Input = {
     keys: {},
@@ -129,6 +130,15 @@ export const Input = {
         window.addEventListener('mouseup', (e) => {
             if (e.button === 0) this.mouse.leftDown = false;
         });
+
+        // Zoom Control (Mouse Wheel)
+        window.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomSpeed = 0.001;
+            CONFIG.SCALE += e.deltaY * -zoomSpeed;
+            // Clamp Zoom (Min 0.5x, Max 5.0x)
+            CONFIG.SCALE = Math.max(0.5, Math.min(CONFIG.SCALE, 5.0));
+        }, { passive: false });
 
         // Prevent context menu on right click
         canvas.addEventListener('contextmenu', e => e.preventDefault());
